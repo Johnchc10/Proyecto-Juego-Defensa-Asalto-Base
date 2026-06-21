@@ -170,3 +170,13 @@ class Mapa(Base):
     def base_destruida(self):
 
         return self.base.destruida()
+    def quedan_unidades(self):
+
+        for fila in self.matriz:
+
+            for casilla in fila:
+
+                if isinstance(casilla, Unidad):
+                    return True
+
+        return False

@@ -17,18 +17,39 @@ class Partida:
 
         return False
     
-    def verificar_ganador_partida(self):
+    def verificar_ganador_ronda(self, mapa):
 
-        if self.victorias_atacante >= 3:
+        if mapa.base_destruida():
 
-            print("El atacante ganó la partida")
+            self.victorias_atacante += 1
 
-            return True
+            print("Gana el atacante")
 
-        if self.victorias_defensor >= 3:
+            return "atacante"
 
-            print("El defensor ganó la partida")
+        if not mapa.quedan_unidades():
 
-            return True
+            self.victorias_defensor += 1
 
-        return False
+            print("Gana el defensor")
+
+            return "defensor"
+
+        return None
+    
+    def nueva_ronda(self, defensor, atacante):
+
+        self.ronda += 1
+
+        defensor.agregar_dinero(100)
+        atacante.agregar_dinero(100)
+
+        print(f"Comienza la ronda {self.ronda}")
+    
+    def partida_terminada(self):
+
+        return (
+            self.victorias_defensor >= 3
+            or
+            self.victorias_atacante >= 3
+        )

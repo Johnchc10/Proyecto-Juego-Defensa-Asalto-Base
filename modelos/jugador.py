@@ -5,6 +5,7 @@ class Jugador:#Clase para representar a un jugador en el juego
         self.contraseña = contraseña
         self.victorias_defensor = 0
         self.victorias_atacante = 0
+        self.dinero = 500
     
     def guardar_jugador(self):
         try:
@@ -38,6 +39,39 @@ class Jugador:#Clase para representar a un jugador en el juego
         self.guardar_jugador()
         return True
     
+    def agregar_dinero(self, cantidad):
+        self.dinero += cantidad
+        
+    def gastar_dinero(self, cantidad):
+
+        if self.dinero >= cantidad:
+
+            self.dinero -= cantidad
+            return True
+
+        return False
+    #Funciones para comprar 
+    def comprar_muro(self, muro):
+
+        if self.gastar_dinero(muro.costo):
+            return True
+
+        return False
+    
+    def comprar_torre(self, torre):
+
+        if self.gastar_dinero(torre.costo):
+            return True
+
+        return False
+    
+    def comprar_unidad(self, unidad):
+
+        if self.gastar_dinero(unidad.costo):
+            return True
+
+        return False
+    
     @staticmethod # Método estático para verificar las credenciales de un jugador
     def iniciar_sesion(usuario, contraseña):
         try:
@@ -54,3 +88,4 @@ class Jugador:#Clase para representar a un jugador en el juego
                 return jugador
         
         return None
+    
