@@ -1,7 +1,3 @@
-from modelos.partida import Partida
+from interfaz.tablero import Tablero
 
-partida = Partida()
-
-partida.victorias_atacante = 3
-
-print(partida.partida_terminada())
+Tablero()
