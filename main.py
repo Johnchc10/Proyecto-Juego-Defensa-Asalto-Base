@@ -1,19 +1,11 @@
 from modelos.mapa import Mapa
-from modelos.unidad import Soldado
-from modelos.muro import Muro
+from modelos.partida import Partida
 
+partida = Partida()
 mapa = Mapa()
 
-soldado = Soldado()
-muro = Muro()
+mapa.base.recibir_daño(1000)
 
-mapa.colocar_objeto(2, 0, soldado)
-mapa.colocar_objeto(2, 1, muro)
+partida.verificar_ganador_ronda(mapa)
 
-print("Antes")
-mapa.mostrar()
-
-soldado.mover(mapa)
-
-print("\nVida muro:")
-print(muro.vida)
+print(partida.victorias_atacante)

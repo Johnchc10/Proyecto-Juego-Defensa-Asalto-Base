@@ -5,6 +5,10 @@ class Torre: #Aquí se define la clase Torre, que representa una torre en el jue
         self.daño = daño
         self.alcance = alcance
         self.costo = costo
+        
+        self.fila = None
+        self.columna = None
+        
     
     def __str__(self):
         return f"{self.nombre} | Vida: {self.vida} "

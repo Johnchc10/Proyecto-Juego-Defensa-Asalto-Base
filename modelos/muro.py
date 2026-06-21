@@ -2,7 +2,11 @@ class Muro:
     def __init__(self):
         self.vida = 150
         self.costo = 100
-    
+        self.fila = None
+        self.columna = None
+        
+        
+        
     def recibir_daño(self, daño):
         self.vida -= daño
         if self.vida < 0:

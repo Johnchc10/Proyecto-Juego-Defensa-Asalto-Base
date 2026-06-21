@@ -3,6 +3,7 @@ from modelos.muro import Muro
 from modelos.torre import Torre
 from modelos.unidad import Unidad
 
+
 class Mapa(Base):
     def __init__(self):
         self.filas = 10
@@ -86,3 +87,86 @@ class Mapa(Base):
                     fila,
                     columna
                 )
+    def obtener_unidades(self):
+
+        unidades = []
+
+        for fila in self.matriz:
+
+            for casilla in fila:
+
+                if isinstance(casilla, Unidad):
+                    unidades.append(casilla)
+
+        return unidades
+    
+    def obtener_torres(self):
+
+        torres = []
+
+        for fila in self.matriz:
+
+            for casilla in fila:
+
+                if isinstance(casilla, Torre):
+                    torres.append(casilla)
+
+        return torres
+    
+    def ejecutar_turno(self):
+
+        torres = self.obtener_torres()
+
+        for torre in torres:
+
+            objetivo = self.buscar_unidad_mas_cercana(torre)
+
+            if objetivo:
+                torre.atacar(objetivo)
+
+        self.limpiar_destruidos()
+
+        unidades = self.obtener_unidades()
+
+        for unidad in unidades:
+            unidad.mover(self)
+
+        self.limpiar_destruidos()
+    
+    def buscar_unidad_mas_cercana(self, torre):
+
+        for fila in self.matriz:
+
+            for casilla in fila:
+
+                if isinstance(casilla, Unidad):
+
+                    distancia = abs(casilla.fila - torre.fila) + abs(casilla.columna - torre.columna)
+
+                    if distancia <= torre.alcance:
+                        return casilla
+
+        return None
+    
+    def limpiar_destruidos(self):
+
+        for fila in range(self.filas):
+
+            for columna in range(self.columnas):
+
+                objeto = self.matriz[fila][columna]
+
+                if objeto is not None:
+
+                    if hasattr(objeto, "destruido"):
+
+                        if objeto.destruido():
+                            self.matriz[fila][columna] = None
+
+                    elif hasattr(objeto, "destruida"):
+
+                        if objeto.destruida():
+                            self.matriz[fila][columna] = None
+    def base_destruida(self):
+
+        return self.base.destruida()

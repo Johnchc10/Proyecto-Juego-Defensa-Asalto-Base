@@ -51,7 +51,26 @@ class Unidad:
             )
 
         else:
+
             self.atacar(objeto)
+
+            if hasattr(objeto, "destruido"):
+
+                if objeto.destruido():
+
+                    mapa.eliminar_objeto(
+                        objeto.fila,
+                        objeto.columna
+                    )
+
+            elif hasattr(objeto, "destruida"):
+
+                if objeto.destruida():
+
+                    mapa.eliminar_objeto(
+                        objeto.fila,
+                        objeto.columna
+                    )
     
 class Soldado(Unidad):
     
