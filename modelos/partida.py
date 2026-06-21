@@ -5,24 +5,19 @@ class Partida:
         self.victorias_defensor = 0
         self.victorias_atacante = 0
         
-    def verificar_ganador_ronda(self, mapa):
-
-        if mapa.base_destruida():
-
-            self.victorias_atacante += 1
-
-            print("Gana el atacante")
-
-            return True
-
-        return False
     
-    def verificar_ganador_ronda(self, mapa):
+    
+    def verificar_ganador_ronda(
+        self,
+        mapa,
+        defensor,
+        atacante
+    ):
 
         if mapa.base_destruida():
 
             self.victorias_atacante += 1
-
+            atacante.sumar_victoria_atacante()
             print("Gana el atacante")
 
             return "atacante"
@@ -30,7 +25,7 @@ class Partida:
         if not mapa.quedan_unidades():
 
             self.victorias_defensor += 1
-
+            defensor.sumar_victoria_defensor()
             print("Gana el defensor")
 
             return "defensor"

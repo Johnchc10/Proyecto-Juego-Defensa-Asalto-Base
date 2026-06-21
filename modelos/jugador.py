@@ -55,6 +55,16 @@ class Jugador:#Clase para representar a un jugador en el juego
         return self.gastar_dinero(
             objeto.costo
         )
+    def sumar_victoria_defensor(self):
+
+        self.victorias_defensor += 1
+
+        self.guardar_jugador()
+    def sumar_victoria_atacante(self):
+
+        self.victorias_atacante += 1
+
+        self.guardar_jugador()
     
     @staticmethod # Método estático para verificar las credenciales de un jugador
     def iniciar_sesion(usuario, contraseña):

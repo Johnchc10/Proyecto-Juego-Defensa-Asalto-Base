@@ -1,35 +1,24 @@
 from modelos.jugador import Jugador
-from modelos.gestor_partida import GestorPartida
+from modelos.partida import Partida
+from modelos.mapa import Mapa
 
-from interfaz.roles import Roles
-from interfaz.facciones import Facciones
-
-gestor = GestorPartida()
-
-j1 = Jugador("John", "123")
-j2 = Jugador("Pedro", "456")
-
-gestor.asignar_jugadores(
-    j1,
-    j2
+defensor = Jugador.iniciar_sesion(
+    "John",
+    "1234"
 )
 
-roles = Roles(j1, j2)
-
-gestor.asignar_roles(
-    roles.obtener_defensor(),
-    roles.obtener_atacante()
+atacante = Jugador.iniciar_sesion(
+    "Pedro",
+    "456"
 )
 
-facciones = Facciones()
+partida = Partida()
+mapa = Mapa()
 
-gestor.asignar_facciones(
-    facciones.obtener_faccion_defensor(),
-    facciones.obtener_faccion_atacante()
+resultado = partida.verificar_ganador_ronda(
+    mapa,
+    defensor,
+    atacante
 )
 
-print("Defensor:", gestor.defensor.usuario)
-print("Atacante:", gestor.atacante.usuario)
-
-print("Facción defensor:", gestor.faccion_defensor)
-print("Facción atacante:", gestor.faccion_atacante)
+print(resultado)
