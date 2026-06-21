@@ -21,7 +21,7 @@ from modelos.torre import (
 
 class Tablero:
 
-    def __init__(self, mapa,jugador):
+    def __init__(self, mapa,jugador,faccion):
 
         self.mapa = mapa
 
@@ -31,10 +31,22 @@ class Tablero:
         
         self.ventana = tk.Tk()
         self.ventana.title("Defensa y Asalto de Base")
+        self.label_faccion = tk.Label(
+            self.ventana,
+            text=f"Facción: {self.faccion}",
+            font=("Arial", 12, "bold")
+        )
 
+        self.label_faccion.grid(
+            row=12,
+            column=0,
+            columnspan=5
+        )
+        
         self.botones = []
 
         self.jugador = jugador
+        self.faccion = faccion
         
         self.label_dinero = tk.Label(
             self.ventana,
