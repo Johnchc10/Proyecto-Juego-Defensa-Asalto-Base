@@ -2,21 +2,77 @@ import tkinter as tk
 
 from modelos.base import Base
 from modelos.muro import Muro
-from modelos.torre import Torre
+
 from modelos.unidad import Unidad
+
+from modelos.torre import (
+    Torre,
+    TorreArquero,
+    TorreCatapulta,
+    TorreMago
+)
+
 
 
 class Tablero:
 
-    def __init__(self, mapa):
+    def __init__(self, mapa,jugador):
 
         self.mapa = mapa
+
+        # Objeto que se colocará al hacer clic
+        self.objeto_seleccionado = "arquero"
 
         self.ventana = tk.Tk()
         self.ventana.title("Defensa y Asalto de Base")
 
         self.botones = []
 
+        self.jugador = jugador
+        
+        self.label_dinero = tk.Label(
+            self.ventana,
+            text=f"Dinero: {self.jugador.dinero}",
+            font=("Arial", 12, "bold")
+        )
+
+        self.label_dinero.grid(row=11, column=0, columnspan=5)
+        
+        
+        
+        
+        
+        tk.Button(
+            self.ventana,
+            text="Arquero",
+            command=lambda: self.seleccionar_objeto("arquero")
+        ).grid(row=0, column=11)
+
+        tk.Button(
+            self.ventana,
+            text="Catapulta",
+            command=lambda: self.seleccionar_objeto("catapulta")
+        ).grid(row=1, column=11)
+
+        tk.Button(
+            self.ventana,
+            text="Mago",
+            command=lambda: self.seleccionar_objeto("mago")
+        ).grid(row=2, column=11)
+
+        tk.Button(
+            self.ventana,
+            text="Muro",
+            command=lambda: self.seleccionar_objeto("muro")
+        ).grid(row=3, column=11)
+        
+        tk.Button(
+            self.ventana,
+            text="Iniciar Combate",
+            command=self.iniciar_combate
+        ).grid(row=5, column=11)
+        
+        
         for fila in range(10):
 
             fila_botones = []
@@ -27,7 +83,8 @@ class Tablero:
                     self.ventana,
                     width=4,
                     height=2,
-                    text=""
+                    command=lambda f=fila, c=columna:
+                    self.click_casilla(f, c)
                 )
 
                 boton.grid(
@@ -43,6 +100,21 @@ class Tablero:
 
         self.ventana.mainloop()
 
+    def actualizar_dinero(self):
+
+            self.label_dinero.config(
+                text=f"Dinero: {self.jugador.dinero}"
+            )    
+    def seleccionar_objeto(self, objeto):
+            self.objeto_seleccionado = objeto
+        
+    def iniciar_combate(self):
+
+        self.mapa.ejecutar_turno()
+
+        self.dibujar_mapa()
+    
+          
     def dibujar_mapa(self):
 
         for fila in range(10):
@@ -68,3 +140,37 @@ class Tablero:
                 self.botones[fila][columna].config(
                     text=texto
                 )
+
+    def click_casilla(self, fila, columna):
+
+        if self.mapa.obtener_objeto(fila, columna) is None:
+
+            if self.objeto_seleccionado == "arquero":
+                objeto = TorreArquero()
+
+            elif self.objeto_seleccionado == "catapulta":
+                objeto = TorreCatapulta()
+
+            elif self.objeto_seleccionado == "mago":
+                objeto = TorreMago()
+
+            elif self.objeto_seleccionado == "muro":
+                objeto = Muro()
+
+            else:
+                return
+
+            if self.jugador.comprar(objeto):
+
+                self.mapa.colocar_objeto(
+                    fila,
+                    columna,
+                    objeto
+                )
+
+                self.actualizar_dinero()
+
+                self.dibujar_mapa()
+
+            else:
+                print("Dinero insuficiente")

@@ -50,27 +50,11 @@ class Jugador:#Clase para representar a un jugador en el juego
             return True
 
         return False
-    #Funciones para comprar 
-    def comprar_muro(self, muro):
+    def comprar(self, objeto):
 
-        if self.gastar_dinero(muro.costo):
-            return True
-
-        return False
-    
-    def comprar_torre(self, torre):
-
-        if self.gastar_dinero(torre.costo):
-            return True
-
-        return False
-    
-    def comprar_unidad(self, unidad):
-
-        if self.gastar_dinero(unidad.costo):
-            return True
-
-        return False
+        return self.gastar_dinero(
+            objeto.costo
+        )
     
     @staticmethod # Método estático para verificar las credenciales de un jugador
     def iniciar_sesion(usuario, contraseña):
