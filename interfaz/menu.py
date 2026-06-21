@@ -1,4 +1,14 @@
 import tkinter as tk
+from interfaz.ranking import Ranking
+
+from modelos.jugador import Jugador
+from modelos.gestor_partida import GestorPartida
+
+from interfaz.roles import Roles
+from interfaz.facciones import Facciones
+
+from modelos.mapa import Mapa
+from interfaz.tablero import Tablero
 
 class Menu:
     def __init__(self):
@@ -39,9 +49,67 @@ class Menu:
         self.ventana.mainloop()
     
     def iniciar_partida(self):
-        print("Iniciar partida")
-    
+        self.ventana.destroy()
+        gestor = GestorPartida()
+
+        jugador1 = Jugador(
+            "John",
+            "1234"
+        )
+
+        jugador2 = Jugador(
+            "Pedro",
+            "5678"
+        )
+
+        gestor.asignar_jugadores(
+            jugador1,
+            jugador2
+        )
+
+        roles = Roles(
+            jugador1,
+            jugador2
+        )
+
+        gestor.asignar_roles(
+            roles.obtener_defensor(),
+            roles.obtener_atacante()
+        )
+
+        facciones = Facciones()
+
+        gestor.asignar_facciones(
+            facciones.obtener_faccion_defensor(),
+            facciones.obtener_faccion_atacante()
+        )
+
+        print(
+            "Defensor:",
+            gestor.defensor.usuario
+        )
+
+        print(
+            "Atacante:",
+            gestor.atacante.usuario
+        )
+
+        print(
+            "Facción defensor:",
+            gestor.faccion_defensor
+        )
+
+        print(
+            "Facción atacante:",
+            gestor.faccion_atacante
+        )
+        mapa = Mapa()
+
+        Tablero(
+            mapa,
+            gestor.defensor
+        )
     def ver_ranking(self):
-        print("Ver ranking")
+        Ranking()
         
         
