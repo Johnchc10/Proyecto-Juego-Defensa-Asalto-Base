@@ -1,7 +1,10 @@
 import tkinter as tk
-
+from modelos.partida import Partida
 from modelos.base import Base
 from modelos.muro import Muro
+from tkinter import messagebox
+
+
 
 from modelos.unidad import (
     Unidad,
@@ -31,6 +34,11 @@ class Tablero:
         
         self.ventana = tk.Tk()
         self.ventana.title("Defensa y Asalto de Base")
+        self.botones = []
+
+        self.jugador = jugador
+        self.faccion = faccion
+        self.partida = Partida()
         self.label_faccion = tk.Label(
             self.ventana,
             text=f"Facción: {self.faccion}",
@@ -43,10 +51,7 @@ class Tablero:
             columnspan=5
         )
         
-        self.botones = []
-
-        self.jugador = jugador
-        self.faccion = faccion
+        
         
         self.label_dinero = tk.Label(
             self.ventana,
@@ -56,7 +61,29 @@ class Tablero:
 
         self.label_dinero.grid(row=11, column=0, columnspan=5)
         
+        self.label_ronda = tk.Label(
+            self.ventana,
+            text="Ronda 1",
+            font=("Arial", 12, "bold")
+        )
+
+        self.label_ronda.grid(
+            row=13,
+            column=0,
+            columnspan=5
+        )
         
+        self.label_marcador = tk.Label(
+            self.ventana,
+            text="Defensor: 0 | Atacante: 0",
+            font=("Arial", 12, "bold")
+        )
+
+        self.label_marcador.grid(
+            row=14,
+            column=0,
+            columnspan=5
+        )
         
         
         
@@ -140,7 +167,16 @@ class Tablero:
 
             self.label_dinero.config(
                 text=f"Dinero: {self.jugador.dinero}"
-            )    
+            )
+    
+    def actualizar_marcador(self):
+
+        self.label_marcador.config(
+            text=
+            f"Defensor: {self.partida.victorias_defensor} | "
+            f"Atacante: {self.partida.victorias_atacante}"
+        )
+    
     def seleccionar_objeto(self, objeto):
             self.objeto_seleccionado = objeto
         
@@ -148,6 +184,40 @@ class Tablero:
 
         self.mapa.ejecutar_turno()
 
+        resultado = self.partida.verificar_ganador_ronda(
+            self.mapa,
+            self.jugador,
+            self.jugador
+        )
+
+        if resultado:
+            messagebox.showinfo(
+                "Fin de ronda",
+                f"Gana el {resultado}"
+            )
+            self.actualizar_marcador()
+            self.partida.ronda += 1
+
+            self.label_ronda.config(
+                text=f"Ronda {self.partida.ronda}"
+            )  
+            if self.partida.partida_terminada():
+
+                if self.partida.victorias_defensor >= 3:
+
+                    messagebox.showinfo(
+                        "Fin de partida",
+                        "¡El defensor gana la partida!"
+                    )
+
+                else:
+
+                    messagebox.showinfo(
+                        "Fin de partida",
+                        "¡El atacante gana la partida!"
+                    )
+                
+                self.ventana.destroy()
         self.dibujar_mapa()
     
           
@@ -248,4 +318,7 @@ class Tablero:
                 self.dibujar_mapa()
 
             else:
-                print("Dinero insuficiente")
+                messagebox.showerror(
+                    "Error",
+                    "Dinero insuficiente"
+                )
