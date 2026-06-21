@@ -161,17 +161,47 @@ class Tablero:
 
                 texto = ""
 
-                if isinstance(objeto, Base):
-                    texto = "B"
+                if self.faccion == "Medieval":
 
-                elif isinstance(objeto, Muro):
-                    texto = "M"
+                    if isinstance(objeto, Base):
+                        texto = "🏰"
 
-                elif isinstance(objeto, Torre):
-                    texto = "T"
+                    elif isinstance(objeto, Muro):
+                        texto = "🧱"
 
-                elif isinstance(objeto, Unidad):
-                    texto = "U"
+                    elif isinstance(objeto, Torre):
+                        texto = "🏹"
+
+                    elif isinstance(objeto, Unidad):
+                        texto = "⚔️"
+
+                elif self.faccion == "Futurista":
+
+                    if isinstance(objeto, Base):
+                        texto = "🤖"
+
+                    elif isinstance(objeto, Muro):
+                        texto = "⚙️"
+
+                    elif isinstance(objeto, Torre):
+                        texto = "🔫"
+
+                    elif isinstance(objeto, Unidad):
+                        texto = "🚀"
+
+                elif self.faccion == "Naturaleza":
+
+                    if isinstance(objeto, Base):
+                        texto = "🌳"
+
+                    elif isinstance(objeto, Muro):
+                        texto = "🍃"
+
+                    elif isinstance(objeto, Torre):
+                        texto = "🌿"
+
+                    elif isinstance(objeto, Unidad):
+                        texto = "🐺"
 
                 self.botones[fila][columna].config(
                     text=texto
