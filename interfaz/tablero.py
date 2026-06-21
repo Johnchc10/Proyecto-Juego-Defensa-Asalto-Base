@@ -3,7 +3,12 @@ import tkinter as tk
 from modelos.base import Base
 from modelos.muro import Muro
 
-from modelos.unidad import Unidad
+from modelos.unidad import (
+    Unidad,
+    Soldado,
+    Caballero,
+    Explorador
+)
 
 from modelos.torre import (
     Torre,
@@ -22,7 +27,8 @@ class Tablero:
 
         # Objeto que se colocará al hacer clic
         self.objeto_seleccionado = "arquero"
-
+        self.modo = "defensa"
+        
         self.ventana = tk.Tk()
         self.ventana.title("Defensa y Asalto de Base")
 
@@ -65,6 +71,24 @@ class Tablero:
             text="Muro",
             command=lambda: self.seleccionar_objeto("muro")
         ).grid(row=3, column=11)
+        
+        tk.Button(
+            self.ventana,
+            text="Soldado",
+            command=lambda: self.seleccionar_objeto("soldado")
+        ).grid(row=6, column=11)
+
+        tk.Button(
+            self.ventana,
+            text="Caballero",
+            command=lambda: self.seleccionar_objeto("caballero")
+        ).grid(row=7, column=11)
+
+        tk.Button(
+        self.ventana,
+        text="Explorador",
+        command=lambda: self.seleccionar_objeto("explorador")
+        ).grid(row=8, column=11)
         
         tk.Button(
             self.ventana,
@@ -157,6 +181,15 @@ class Tablero:
             elif self.objeto_seleccionado == "muro":
                 objeto = Muro()
 
+            elif self.objeto_seleccionado == "soldado":
+                objeto = Soldado()
+
+            elif self.objeto_seleccionado == "caballero":
+                objeto = Caballero()
+
+            elif self.objeto_seleccionado == "explorador":
+                objeto = Explorador()
+            
             else:
                 return
 
