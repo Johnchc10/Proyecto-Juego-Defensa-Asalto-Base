@@ -24,7 +24,7 @@ from modelos.torre import (
 
 class Tablero:
 
-    def __init__(self, mapa,jugador,faccion):
+    def __init__(self, mapa,defensor,atacante,faccion):
 
         self.mapa = mapa
 
@@ -35,8 +35,11 @@ class Tablero:
         self.ventana = tk.Tk()
         self.ventana.title("Defensa y Asalto de Base")
         self.botones = []
-
-        self.jugador = jugador
+        self.ventana.geometry("900x700")
+        
+        
+        self.defensor = defensor
+        self.atacante = atacante
         self.faccion = faccion
         self.partida = Partida()
         self.label_faccion = tk.Label(
@@ -55,7 +58,7 @@ class Tablero:
         
         self.label_dinero = tk.Label(
             self.ventana,
-            text=f"Dinero: {self.jugador.dinero}",
+            text=f"Dinero: {self.defensor.dinero}",
             font=("Arial", 12, "bold")
         )
 
@@ -144,8 +147,8 @@ class Tablero:
 
                 boton = tk.Button(
                     self.ventana,
-                    width=4,
-                    height=2,
+                    width=6,
+                    height=3,
                     command=lambda f=fila, c=columna:
                     self.click_casilla(f, c)
                 )
@@ -166,7 +169,7 @@ class Tablero:
     def actualizar_dinero(self):
 
             self.label_dinero.config(
-                text=f"Dinero: {self.jugador.dinero}"
+                text=f"Dinero: {self.defensor.dinero}"
             )
     
     def actualizar_marcador(self):
@@ -186,8 +189,8 @@ class Tablero:
 
         resultado = self.partida.verificar_ganador_ronda(
             self.mapa,
-            self.jugador,
-            self.jugador
+            self.defensor,
+            self.atacante
         )
 
         if resultado:
@@ -305,7 +308,7 @@ class Tablero:
             else:
                 return
 
-            if self.jugador.comprar(objeto):
+            if self.defensor.comprar(objeto):
 
                 self.mapa.colocar_objeto(
                     fila,

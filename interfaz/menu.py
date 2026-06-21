@@ -108,6 +108,7 @@ class Menu:
         Tablero(
             mapa,
             gestor.defensor,
+            gestor.atacante,
             gestor.faccion_defensor
         )
     def ver_ranking(self):
