@@ -3,7 +3,7 @@ from modelos.partida import Partida
 from modelos.base import Base
 from modelos.muro import Muro
 from tkinter import messagebox
-
+from PIL import Image, ImageTk
 
 
 from modelos.unidad import (
@@ -24,7 +24,7 @@ from modelos.torre import (
 
 class Tablero:
 
-    def __init__(self, mapa,defensor,atacante,faccion):
+    def __init__(self, mapa,defensor,atacante,faccion_atacante,faccion_defensor):
 
         self.mapa = mapa
 
@@ -53,8 +53,13 @@ class Tablero:
         
         self.defensor = defensor
         self.atacante = atacante
-        self.faccion = faccion
+        self.faccion_defensor = faccion_defensor
+        self.faccion_atacante = faccion_atacante
+        self.faccion = faccion_defensor
         self.partida = Partida()
+        self.imagenes = {}
+
+        self.cargar_imagenes()
         self.label_faccion = tk.Label(
             self.ventana,
             text=f"Facción: {self.faccion}",
@@ -166,8 +171,10 @@ class Tablero:
 
                 boton = tk.Button(
                     self.ventana,
-                    width=6,
-                    height=3,
+                    width=50,
+                    height=50,
+                    padx=0,
+                    pady=0,
                     command=lambda f=fila, c=columna:
                     self.click_casilla(f, c)
                 )
@@ -176,7 +183,7 @@ class Tablero:
                     row=fila,
                     column=columna
                 )
-
+                boton.grid_propagate(False)
                 fila_botones.append(boton)
 
             self.botones.append(fila_botones)
@@ -210,10 +217,51 @@ class Tablero:
     def seleccionar_objeto(self, objeto):
             self.objeto_seleccionado = objeto
     
+    def cargar_imagenes(self):
+
+        carpeta = self.faccion.lower()
+
+        self.imagenes["vacio"] = tk.PhotoImage(
+            width=40,
+            height=40
+        )
+        
+        
+        self.imagenes["base"] = ImageTk.PhotoImage(
+            Image.open(
+                f"imagenes/{carpeta}/base.jpeg"
+            ).resize((40,40))
+        )
+
+        self.imagenes["muro"] = ImageTk.PhotoImage(
+            Image.open(
+                f"imagenes/{carpeta}/muro.jpeg"
+            ).resize((40,40))
+        )
+
+        self.imagenes["torre"] = ImageTk.PhotoImage(
+            Image.open(
+                f"imagenes/{carpeta}/torre.jpeg"
+            ).resize((40, 40))
+        )
+
+        self.imagenes["unidad"] = ImageTk.PhotoImage(
+            Image.open(
+                f"imagenes/{carpeta}/unidad.jpeg"
+            ).resize((40, 40))
+        )
+    
+    
+    
+    
+    
     def cambiar_a_ataque(self):
 
         self.modo = "ataque"
-
+        self.faccion = self.faccion_atacante
+        self.label_faccion.config(
+            text= f"Facción: {self.faccion}"
+        )
         self.label_modo.config(
             text="Turno del Atacante"
         )
@@ -222,7 +270,11 @@ class Tablero:
             "Cambio de turno",
             "Ahora el atacante puede colocar unidades"
         )
-      
+        self.actualizar_dinero()
+        self.dibujar_mapa()
+        
+        
+        
     def iniciar_combate(self):
 
         if self.modo == "defensa":
@@ -303,53 +355,42 @@ class Tablero:
 
                 objeto = self.mapa.matriz[fila][columna]
 
-                texto = ""
+                if isinstance(objeto, Base):
 
-                if self.faccion == "Medieval":
+                    self.botones[fila][columna].config(
+                        image=self.imagenes["base"],
+                        text=""
+                    )
 
-                    if isinstance(objeto, Base):
-                        texto = "🏰"
+                elif isinstance(objeto, Muro):
 
-                    elif isinstance(objeto, Muro):
-                        texto = "🧱"
+                    self.botones[fila][columna].config(
+                        image=self.imagenes["muro"],
+                        text=""
+                    )
 
-                    elif isinstance(objeto, Torre):
-                        texto = "🏹"
+                elif isinstance(objeto, Torre):
 
-                    elif isinstance(objeto, Unidad):
-                        texto = "⚔️"
+                    self.botones[fila][columna].config(
+                        image=self.imagenes["torre"],
+                        text=""
+                    )
 
-                elif self.faccion == "Futurista":
+                elif isinstance(objeto, Unidad):
 
-                    if isinstance(objeto, Base):
-                        texto = "🤖"
+                    self.botones[fila][columna].config(
+                        image=self.imagenes["unidad"],
+                        text=""
+                    )
 
-                    elif isinstance(objeto, Muro):
-                        texto = "⚙️"
+                else:
 
-                    elif isinstance(objeto, Torre):
-                        texto = "🔫"
+                    
 
-                    elif isinstance(objeto, Unidad):
-                        texto = "🚀"
-
-                elif self.faccion == "Naturaleza":
-
-                    if isinstance(objeto, Base):
-                        texto = "🌳"
-
-                    elif isinstance(objeto, Muro):
-                        texto = "🍃"
-
-                    elif isinstance(objeto, Torre):
-                        texto = "🌿"
-
-                    elif isinstance(objeto, Unidad):
-                        texto = "🐺"
-
-                self.botones[fila][columna].config(
-                    text=texto
-                )
+                    self.botones[fila][columna].config(
+                        image=self.imagenes["vacio"],
+                        text=""
+                    )
 
     def click_casilla(self, fila, columna):
 

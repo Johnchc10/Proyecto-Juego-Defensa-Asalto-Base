@@ -8,5 +8,10 @@
         "contrase\u00f1a": "5678",
         "victorias_defensor": 0,
         "victorias_atacante": 1
+    },
+    "JohnCh": {
+        "contrase\u00f1a": "1234",
+        "victorias_defensor": 0,
+        "victorias_atacante": 0
     }
 }

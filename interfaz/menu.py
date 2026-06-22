@@ -10,6 +10,8 @@ from interfaz.facciones import Facciones
 from modelos.mapa import Mapa
 from interfaz.tablero import Tablero
 
+from interfaz.login_partida import LoginPartida
+
 class Menu:
     def __init__(self):
         # Crear la ventana principal del menú
@@ -52,16 +54,32 @@ class Menu:
         self.ventana.destroy()
         gestor = GestorPartida()
 
-        jugador1 = Jugador(
-            "John",
-            "1234"
-        )
+        login1 = LoginPartida()
 
-        jugador2 = Jugador(
-            "Pedro",
-            "5678"
-        )
+        jugador1 = login1.obtener_jugador()
 
+        if jugador1 is None:
+            return
+
+        login2 = LoginPartida()
+
+        jugador2 = login2.obtener_jugador()
+
+        if jugador2 is None:
+            return
+        
+        if jugador1.usuario == jugador2.usuario:
+
+            from tkinter import messagebox
+
+            messagebox.showerror(
+                "Error",
+                "Los jugadores deben ser diferentes"
+            )
+
+            return
+        
+        
         gestor.asignar_jugadores(
             jugador1,
             jugador2
@@ -109,7 +127,8 @@ class Menu:
             mapa,
             gestor.defensor,
             gestor.atacante,
-            gestor.faccion_defensor
+            gestor.faccion_defensor,
+            gestor.faccion_atacante
         )
     def ver_ranking(self):
         Ranking()

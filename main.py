@@ -1,3 +1,3 @@
-from interfaz.menu import Menu
+from interfaz.login import Login
 
-Menu()
+Login()
