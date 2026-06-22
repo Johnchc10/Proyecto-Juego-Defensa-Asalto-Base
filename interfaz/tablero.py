@@ -37,6 +37,19 @@ class Tablero:
         self.botones = []
         self.ventana.geometry("900x700")
         
+        self.label_modo = tk.Label(
+            self.ventana,
+            text="Turno del Defensor",
+            font=("Arial", 12, "bold")
+        )
+
+        self.label_modo.grid(
+            row=15,
+            column=0,
+            columnspan=5
+        )
+        
+       
         
         self.defensor = defensor
         self.atacante = atacante
@@ -134,6 +147,12 @@ class Tablero:
         
         tk.Button(
             self.ventana,
+            text="Pasar al Atacante",
+            command=self.cambiar_a_ataque
+        ).grid(row=4, column=11)
+
+        tk.Button(
+            self.ventana,
             text="Iniciar Combate",
             command=self.iniciar_combate
         ).grid(row=5, column=11)
@@ -168,9 +187,17 @@ class Tablero:
 
     def actualizar_dinero(self):
 
-            self.label_dinero.config(
-                text=f"Dinero: {self.defensor.dinero}"
-            )
+        if self.modo == "defensa":
+
+            dinero = self.defensor.dinero
+
+        else:
+
+            dinero = self.atacante.dinero
+
+        self.label_dinero.config(
+            text=f"Dinero: {dinero}"
+        )
     
     def actualizar_marcador(self):
 
@@ -182,8 +209,30 @@ class Tablero:
     
     def seleccionar_objeto(self, objeto):
             self.objeto_seleccionado = objeto
-        
+    
+    def cambiar_a_ataque(self):
+
+        self.modo = "ataque"
+
+        self.label_modo.config(
+            text="Turno del Atacante"
+        )
+
+        messagebox.showinfo(
+            "Cambio de turno",
+            "Ahora el atacante puede colocar unidades"
+        )
+      
     def iniciar_combate(self):
+
+        if self.modo == "defensa":
+
+            messagebox.showwarning(
+                "Advertencia",
+                "Primero debes pasar al atacante"
+            )
+
+            return
 
         self.mapa.ejecutar_turno()
 
@@ -194,16 +243,14 @@ class Tablero:
         )
 
         if resultado:
+
             messagebox.showinfo(
                 "Fin de ronda",
                 f"Gana el {resultado}"
             )
-            self.actualizar_marcador()
-            self.partida.ronda += 1
 
-            self.label_ronda.config(
-                text=f"Ronda {self.partida.ronda}"
-            )  
+            self.actualizar_marcador()
+
             if self.partida.partida_terminada():
 
                 if self.partida.victorias_defensor >= 3:
@@ -219,8 +266,32 @@ class Tablero:
                         "Fin de partida",
                         "¡El atacante gana la partida!"
                     )
-                
+
                 self.ventana.destroy()
+
+                return
+
+            self.partida.ronda += 1
+
+            self.label_ronda.config(
+                text=f"Ronda {self.partida.ronda}"
+            )
+
+            self.mapa.reiniciar()
+
+            self.defensor.agregar_dinero(100)
+            self.atacante.agregar_dinero(100)
+
+            self.modo = "defensa"
+
+            self.label_modo.config(
+                text="Turno del Defensor"
+            )
+
+            self.actualizar_dinero()
+
+            self.dibujar_mapa()
+
         self.dibujar_mapa()
     
           
@@ -283,7 +354,38 @@ class Tablero:
     def click_casilla(self, fila, columna):
 
         if self.mapa.obtener_objeto(fila, columna) is None:
+            if self.modo == "defensa":
 
+                if self.objeto_seleccionado in [
+                    "soldado",
+                    "caballero",
+                    "explorador"
+                ]:
+
+                    messagebox.showerror(
+                        "Error",
+                        "Solo el atacante puede colocar unidades"
+                    )
+
+                    return
+
+            if self.modo == "ataque":
+
+                if self.objeto_seleccionado in [
+                    "arquero",
+                    "catapulta",
+                    "mago",
+                    "muro"
+                ]:
+
+                    messagebox.showerror(
+                        "Error",
+                        "Solo el defensor puede colocar estructuras"
+                    )
+
+                    return
+            
+            
             if self.objeto_seleccionado == "arquero":
                 objeto = TorreArquero()
 
@@ -308,7 +410,15 @@ class Tablero:
             else:
                 return
 
-            if self.defensor.comprar(objeto):
+            if self.modo == "defensa":
+
+                comprado = self.defensor.comprar(objeto)
+
+            else:
+
+                comprado = self.atacante.comprar(objeto)
+
+            if comprado:
 
                 self.mapa.colocar_objeto(
                     fila,

@@ -180,3 +180,21 @@ class Mapa(Base):
                     return True
 
         return False
+    
+    def reiniciar(self):
+
+        self.matriz = []
+
+        for i in range(self.filas):
+
+            fila = []
+
+            for j in range(self.columnas):
+
+                fila.append(None)
+
+            self.matriz.append(fila)
+
+        self.base = Base()
+
+        self.matriz[5][5] = self.base
